@@ -63,7 +63,6 @@
             );
             background-size: 800% 800%;
             
-            /* УВЕЛИЧИЛ ВРЕМЯ ДО 90 СЕКУНД ДЛЯ ОЧЕНЬ ПЛАВНОГО ГРАДИЕНТА */
             animation: rainbowAnimation 90s linear infinite;
             
             min-height: 250px; 
@@ -104,12 +103,31 @@
             100% { background-position: 100% 50%; }
         }
 
+        /* КНОПКА ДЕТСКОГО РЕЖИМА */
+        #kids-mode-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2.5rem;
+            text-decoration: none;
+            transition: transform 0.2s;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
+            z-index: 100;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #kids-mode-btn:active {
+            transform: scale(0.85);
+        }
+
         @media (max-width: 768px) {
             #demotivator-container { min-height: 75vh; }
             .demo-text-top { font-size: 1.2rem; margin-bottom: 20px; }
             #inner-frame { padding: 25px 15px; }
             #phrase-container { font-size: 1.8rem; }
             .demo-text-bottom { font-size: 1rem; margin-top: 20px; }
+            #kids-mode-btn { font-size: 2.2rem; bottom: 15px; right: 15px; }
         }
     </style>
 </head>
@@ -123,6 +141,8 @@
         <div class="demo-text-bottom">СЛЕДУЮЩАЯ ЧЕРЕЗ ПАРУ СЕКУНД</div>
     </div>
 
+    <a href="anton.html" id="kids-mode-btn" title="Детский режим">🌝</a>
+
     <script>
         const container = document.getElementById('phrase-container');
         let phrases = [];
@@ -131,35 +151,27 @@
         async function loadPhrases() {
             try {
                 const response = await fetch('phrases.json?t=' + new Date().getTime());
-                
-                // Проверяем, успешен ли ответ сервера
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                
+                if (!response.ok) throw new Error("HTTP error " + response.status);
                 phrases = await response.json();
                 
                 if (phrases.length > 0) {
                     setTimeout(changePhrase, 500);
                 } else {
                     container.innerText = "ФАЙЛИК ПУСТ :(";
-                    container.style.opacity = 1; // Делаем ошибку видимой
+                    container.style.opacity = 1; 
                 }
             } catch (error) {
                 console.error("Ошибка загрузки фраз:", error);
-                // Если JSON сломан, выводим сообщение
                 container.innerText = "ОШИБКА В JSON! ПРОВЕРЬ ЗАПЯТЫЕ И СКОБКИ.";
-                container.style.opacity = 1; // Делаем ошибку видимой
+                container.style.opacity = 1; 
             }
         }
 
         function changePhrase() {
             let randomIndex = Math.floor(Math.random() * phrases.length);
-            
             while (randomIndex === lastIndex && phrases.length > 1) {
                 randomIndex = Math.floor(Math.random() * phrases.length);
             }
-            
             lastIndex = randomIndex;
             const text = phrases[randomIndex];
             
