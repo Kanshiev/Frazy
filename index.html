@@ -8,21 +8,23 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
-        /* 1. Внешний фон сайта и приложения - глубокий черный */
+        /* 1. Внешний фон сайта и приложения */
         body {
             margin: 0;
-            height: 100vh;
+            /* Используем 100dvh, чтобы мобильный браузер не прятал текст за панелями */
+            min-height: 100dvh; 
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #000000; 
             
-            /* Шрифт классический для демотиваторов */
             font-family: Georgia, 'Times New Roman', Times, serif;
             font-weight: bold;
-            color: #ffffff; /* Основной цвет текста - белый */
+            color: #ffffff;
             text-align: center;
-            padding: 10px;
+            
+            /* Увеличили поля от самых краев экрана */
+            padding: 40px 20px; 
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -32,9 +34,12 @@
             display: flex;
             flex-direction: column; 
             justify-content: space-between; 
-            width: 90%;
-            height: 85%; 
+            width: 100%;
             max-width: 600px; 
+            
+            /* Делаем высоту гибкой, чтобы текст не убегал */
+            height: auto;
+            min-height: 80vh; 
         }
 
         /* 3. ВЕРХНИЙ ТЕКСТ (Заголовок) */
@@ -42,9 +47,9 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 10px; 
+            /* Увеличили отступ до белой рамки */
+            margin-bottom: 25px; 
             
-            /* Черная обводка */
             text-shadow: 
                 1px 1px 0 #000, -1px -1px 0 #000, 
                 1px -1px 0 #000, -1px 1px 0 #000;
@@ -53,30 +58,30 @@
         /* 4. ВНУТРЕННЯЯ ОБЛАСТЬ С РАМКОЙ */
         #inner-frame {
             flex-grow: 1; 
-            border: 4px solid #ffffff; /* Белая рамка */
-            padding: 20px;
+            border: 4px solid #ffffff; 
+            /* Добавили больше воздуха внутри рамки */
+            padding: 30px 20px; 
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             
-            /* ЦВЕТНОЙ ФОН ВНУТРИ РАМКИ */
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             background-size: 200% 200%;
-            
-            /* Плавное изменение градиента */
             animation: gradientAnimation 10s ease infinite;
+            
+            /* Защита от слишком сильного сжатия рамки */
+            min-height: 250px; 
         }
 
         /* 5. ЦЕНТРАЛЬНЫЙ ТЕКСТ (Сама фраза) */
         #phrase-container {
             font-size: 2.2rem;
             max-width: 95%;
-            line-height: 1.2;
+            line-height: 1.3;
             text-transform: uppercase;
             letter-spacing: 1px;
 
-            /* Мощная черная обводка для центрального текста */
             text-shadow: 
                 2px 2px 0 #000, -2px -2px 0 #000, 
                 2px -2px 0 #000, -2px 2px 0 #000,
@@ -93,7 +98,8 @@
             font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 10px; 
+            /* Увеличили отступ от белой рамки */
+            margin-top: 25px; 
             color: #cccccc; 
             
             text-shadow: 
@@ -110,13 +116,11 @@
 
         /* Адаптация для мобильных экранов */
         @media (max-width: 768px) {
-            #demotivator-container {
-                width: 95%;
-                height: 90%;
-            }
-            .demo-text-top { font-size: 1.2rem; }
+            #demotivator-container { min-height: 75vh; }
+            .demo-text-top { font-size: 1.2rem; margin-bottom: 20px; }
+            #inner-frame { padding: 25px 15px; }
             #phrase-container { font-size: 1.8rem; }
-            .demo-text-bottom { font-size: 1rem; }
+            .demo-text-bottom { font-size: 1rem; margin-top: 20px; }
         }
     </style>
 </head>
@@ -141,7 +145,6 @@
 
         async function loadPhrases() {
             try {
-                // Запрос с ?t= для сброса кэша
                 const response = await fetch('phrases.json?t=' + new Date().getTime());
                 phrases = await response.json();
                 
@@ -159,7 +162,6 @@
         function changePhrase() {
             let randomIndex = Math.floor(Math.random() * phrases.length);
             
-            // Защита от повторов
             while (randomIndex === lastIndex && phrases.length > 1) {
                 randomIndex = Math.floor(Math.random() * phrases.length);
             }
@@ -167,14 +169,12 @@
             lastIndex = randomIndex;
             const text = phrases[randomIndex];
             
-            // Анимация затухания
             container.style.opacity = 0;
             
             setTimeout(() => {
                 container.innerText = text;
                 container.style.opacity = 1;
                 
-                // Таймер: 4 секунды базы + 500 мс на слово
                 const wordsCount = text.split(' ').length;
                 const displayTime = 4000 + (wordsCount * 500);
                 
@@ -182,7 +182,6 @@
             }, 1000); 
         }
 
-        // Старт
         loadPhrases();
     </script>
 
