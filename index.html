@@ -8,10 +8,8 @@
     <link rel="manifest" href="manifest.json">
     
     <style>
-        /* 1. Внешний фон сайта и приложения */
         body {
             margin: 0;
-            /* Используем 100dvh, чтобы мобильный браузер не прятал текст за панелями */
             min-height: 100dvh; 
             display: flex;
             justify-content: center;
@@ -23,13 +21,11 @@
             color: #ffffff;
             text-align: center;
             
-            /* Увеличили поля от самых краев экрана */
             padding: 40px 20px; 
             box-sizing: border-box;
             overflow: hidden;
         }
 
-        /* 2. Контейнер самого демотиватора */
         #demotivator-container {
             display: flex;
             flex-direction: column; 
@@ -40,7 +36,6 @@
             min-height: 80vh; 
         }
 
-        /* 3. ВЕРХНИЙ ТЕКСТ (Заголовок) */
         .demo-text-top {
             font-size: 1.5rem;
             text-transform: uppercase;
@@ -52,7 +47,6 @@
                 1px -1px 0 #000, -1px 1px 0 #000;
         }
 
-        /* 4. ВНУТРЕННЯЯ ОБЛАСТЬ С РАМКОЙ */
         #inner-frame {
             flex-grow: 1; 
             border: 4px solid #ffffff; 
@@ -62,22 +56,19 @@
             align-items: center;
             position: relative;
             
-            /* ПОЛНЫЙ РАДУЖНЫЙ СПЕКТР */
             background: linear-gradient(
                 124deg, 
                 #ff0000, #ff7f00, #ffff00, #00ff00, 
                 #0000ff, #4b0082, #9400d3, #ff0000
             );
-            /* Растягиваем фон, чтобы цвета плавно сменяли друг друга */
             background-size: 800% 800%;
             
-            /* linear делает переливание равномерным и бесконечным (цикл 30 секунд) */
-            animation: rainbowAnimation 30s linear infinite;
+            /* УВЕЛИЧИЛ ВРЕМЯ ДО 90 СЕКУНД ДЛЯ ОЧЕНЬ ПЛАВНОГО ГРАДИЕНТА */
+            animation: rainbowAnimation 90s linear infinite;
             
             min-height: 250px; 
         }
 
-        /* 5. ЦЕНТРАЛЬНЫЙ ТЕКСТ (Сама фраза) */
         #phrase-container {
             font-size: 2.2rem;
             max-width: 95%;
@@ -96,7 +87,6 @@
             transition: opacity 1s ease-in-out;
         }
 
-        /* 6. НИЖНИЙ ТЕКСТ (Пояснение) */
         .demo-text-bottom {
             font-size: 1.2rem;
             text-transform: uppercase;
@@ -109,13 +99,11 @@
                 1px -1px 0 #000, -1px 1px 0 #000;
         }
 
-        /* Анимация переливания радуги */
         @keyframes rainbowAnimation {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
         }
 
-        /* Адаптация для мобильных экранов */
         @media (max-width: 768px) {
             #demotivator-container { min-height: 75vh; }
             .demo-text-top { font-size: 1.2rem; margin-bottom: 20px; }
@@ -128,15 +116,11 @@
 <body>
 
     <div id="demotivator-container">
-        
         <div class="demo-text-top">ФРАЗА ДНЯ</div>
-        
         <div id="inner-frame">
             <div id="phrase-container">ЗАГРУЗКА...</div>
         </div>
-        
         <div class="demo-text-bottom">СЛЕДУЮЩАЯ ЧЕРЕЗ ПАРУ СЕКУНД</div>
-        
     </div>
 
     <script>
@@ -147,16 +131,25 @@
         async function loadPhrases() {
             try {
                 const response = await fetch('phrases.json?t=' + new Date().getTime());
+                
+                // Проверяем, успешен ли ответ сервера
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                
                 phrases = await response.json();
                 
                 if (phrases.length > 0) {
                     setTimeout(changePhrase, 500);
                 } else {
-                    container.innerText = "ФАЙЛИК С ФРАЗАМИ ПУСТ :(";
+                    container.innerText = "ФАЙЛИК ПУСТ :(";
+                    container.style.opacity = 1; // Делаем ошибку видимой
                 }
             } catch (error) {
                 console.error("Ошибка загрузки фраз:", error);
-                container.innerText = "НЕ УДАЛОСЬ ЗАГРУЗИТЬ ФРАЗЫ.";
+                // Если JSON сломан, выводим сообщение
+                container.innerText = "ОШИБКА В JSON! ПРОВЕРЬ ЗАПЯТЫЕ И СКОБКИ.";
+                container.style.opacity = 1; // Делаем ошибку видимой
             }
         }
 
