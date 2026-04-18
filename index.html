@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор фраз</title>
+    <title>Генератор Фраз с Изюминкой</title>
     
     <link rel="manifest" href="manifest.json">
     
@@ -14,35 +14,64 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #1e1e2e; /* Приятный тёмный фон */
-            color: #cdd6f4; /* Мягкий светлый текст */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Яркий, веселый градиент на фоне */
+            background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background-size: cover;
+            background-attachment: fixed;
+            
+            /* Основной цвет текста - белый */
+            color: #ffffff; 
+            
+            /* Шрифт. Выбираем жирный serif (с засечками) для стиля демотиваторов */
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: bold;
+            
             text-align: center;
             padding: 20px;
             overflow: hidden;
         }
         
         #phrase-container {
-            font-size: 2.5rem;
-            max-width: 80%;
-            line-height: 1.4;
+            font-size: 3rem; /* Увеличили размер для солидности */
+            max-width: 90%;
+            line-height: 1.2;
+            
+            /* Текст всегда в верхнем регистре (капс), как на мемах */
+            text-transform: uppercase; 
+            
+            /* Немного увеличим межбуквенное расстояние */
+            letter-spacing: 1px;
+
+            /* МАГИЯ ЧЕРНОЙ РАМКИ (ОБВОДКИ) */
+            /* Мы делаем 8 черных теней, сдвинутых во все стороны на 2px */
+            text-shadow: 
+                2px 2px 0 #000, 
+               -2px -2px 0 #000, 
+                2px -2px 0 #000, 
+               -2px 2px 0 #000,
+                0px 2px 0 #000,
+                0px -2px 0 #000,
+                2px 0px 0 #000,
+                -2px 0px 0 #000,
+                3px 3px 5px rgba(0,0,0,0.7); /* Дополнительная мягкая тень для объема */
+
             opacity: 0;
             transition: opacity 1s ease-in-out;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         /* Адаптация для мобильных экранов */
         @media (max-width: 768px) {
             #phrase-container {
-                font-size: 1.8rem;
-                max-width: 95%;
+                font-size: 2.2rem; /* На телефоне чуть компактнее */
+                max-width: 98%;
             }
         }
     </style>
 </head>
 <body>
 
-    <div id="phrase-container">Загрузка...</div>
+    <div id="phrase-container">ЗАГРУЗКА...</div>
 
     <script>
         const container = document.getElementById('phrase-container');
@@ -60,11 +89,11 @@
                 if (phrases.length > 0) {
                     setTimeout(changePhrase, 500);
                 } else {
-                    container.innerText = "Файлик с фразами пуст :(";
+                    container.innerText = "ФАЙЛИК С ФРАЗАМИ ПУСТ :(";
                 }
             } catch (error) {
                 console.error("Ошибка загрузки фраз:", error);
-                container.innerText = "Не удалось загрузить фразы. Проверь GitHub!";
+                container.innerText = "НЕ УДАЛОСЬ ЗАГРУЗИТЬ ФРАЗЫ.";
             }
         }
 
