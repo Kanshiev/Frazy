@@ -36,8 +36,6 @@
             justify-content: space-between; 
             width: 100%;
             max-width: 600px; 
-            
-            /* Делаем высоту гибкой, чтобы текст не убегал */
             height: auto;
             min-height: 80vh; 
         }
@@ -47,7 +45,6 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            /* Увеличили отступ до белой рамки */
             margin-bottom: 25px; 
             
             text-shadow: 
@@ -59,18 +56,24 @@
         #inner-frame {
             flex-grow: 1; 
             border: 4px solid #ffffff; 
-            /* Добавили больше воздуха внутри рамки */
             padding: 30px 20px; 
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            background-size: 200% 200%;
-            animation: gradientAnimation 10s ease infinite;
+            /* ПОЛНЫЙ РАДУЖНЫЙ СПЕКТР */
+            background: linear-gradient(
+                124deg, 
+                #ff0000, #ff7f00, #ffff00, #00ff00, 
+                #0000ff, #4b0082, #9400d3, #ff0000
+            );
+            /* Растягиваем фон, чтобы цвета плавно сменяли друг друга */
+            background-size: 800% 800%;
             
-            /* Защита от слишком сильного сжатия рамки */
+            /* linear делает переливание равномерным и бесконечным (цикл 30 секунд) */
+            animation: rainbowAnimation 30s linear infinite;
+            
             min-height: 250px; 
         }
 
@@ -98,7 +101,6 @@
             font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            /* Увеличили отступ от белой рамки */
             margin-top: 25px; 
             color: #cccccc; 
             
@@ -107,11 +109,10 @@
                 1px -1px 0 #000, -1px 1px 0 #000;
         }
 
-        /* Анимация переливания градиента */
-        @keyframes gradientAnimation {
+        /* Анимация переливания радуги */
+        @keyframes rainbowAnimation {
             0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         /* Адаптация для мобильных экранов */
