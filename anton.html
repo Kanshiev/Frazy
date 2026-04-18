@@ -48,10 +48,9 @@
 
             border-radius: 40px;
             padding: 40px 30px;
-            /* Уменьшили ширину, чтобы края не прилипали к экрану */
             width: 88%; 
             max-width: 500px;
-            min-height: 200px;
+            min-height: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -75,9 +74,17 @@
             color: #333333; 
         }
 
-        .nav-btn {
+        /* ПАНЕЛЬ КНОПОК */
+        .controls {
             position: fixed;
             bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-btn {
             background: #ffffff;
             border: 4px solid #ffffff; 
             border-radius: 50%;
@@ -89,12 +96,21 @@
             font-size: 2rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            z-index: 100;
             -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s;
         }
 
-        #prev-btn { left: 20px; }
-        #next-btn { right: 20px; }
+        /* Кнопка случайной шутки - чуть больше остальных */
+        #random-btn {
+            width: 85px;
+            height: 85px;
+            font-size: 2.5rem;
+            border-color: #ffcc00; /* Золотистая рамка для важности */
+        }
+
+        .nav-btn:active {
+            transform: scale(0.9);
+        }
         
         #home-btn {
             position: fixed;
@@ -116,9 +132,11 @@
         }
 
         @media (max-width: 768px) {
-            #bubble { width: 90%; padding: 30px 20px; }
+            #bubble { width: 90%; padding: 30px 20px; min-height: 180px; }
             #phrase-container { font-size: 1.8rem; }
-            .nav-btn { width: 60px; height: 60px; bottom: 20px; }
+            .nav-btn { width: 60px; height: 60px; }
+            #random-btn { width: 75px; height: 75px; }
+            .controls { bottom: 20px; gap: 15px; }
         }
     </style>
 </head>
@@ -128,11 +146,14 @@
     <div id="counter">Загрузка...</div>
 
     <div id="bubble">
-        <div id="phrase-container">Нажми, чтобы начать!</div>
+        <div id="phrase-container">Нажми на кубик!</div>
     </div>
 
-    <div id="prev-btn" class="nav-btn">⬅️</div>
-    <div id="next-btn" class="nav-btn">➡️</div>
+    <div class="controls">
+        <div id="prev-btn" class="nav-btn">⬅️</div>
+        <div id="random-btn" class="nav-btn" title="Случайная шутка">🎲</div>
+        <div id="next-btn" class="nav-btn">➡️</div>
+    </div>
 
     <script>
         const container = document.getElementById('phrase-container');
@@ -140,6 +161,7 @@
         const bubble = document.getElementById('bubble');
         const nextBtn = document.getElementById('next-btn');
         const prevBtn = document.getElementById('prev-btn');
+        const randomBtn = document.getElementById('random-btn');
 
         let phrases = [];
         let currentIndex = 0;
@@ -150,9 +172,8 @@
                 phrases = await response.json();
                 
                 if (phrases.length > 0) {
-                    // Рандомный старт: выбираем случайную шутку для начала!
-                    let randomStart = Math.floor(Math.random() * phrases.length);
-                    showPhrase(randomStart);
+                    // Рандомный старт при загрузке
+                    showRandomPhrase();
                 }
             } catch (error) {
                 container.innerText = "Ошибка загрузки 😢";
@@ -173,17 +194,32 @@
             }, 100);
         }
 
-        bubble.addEventListener('click', () => showPhrase(currentIndex + 1));
-        nextBtn.addEventListener('click', () => showPhrase(currentIndex + 1));
-        
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            showPhrase(currentIndex - 1);
-        });
+        function showRandomPhrase() {
+            if (phrases.length <= 1) return;
+            let randomIndex;
+            // Цикл гарантирует, что мы не выберем ту же самую фразу дважды подряд
+            do {
+                randomIndex = Math.floor(Math.random() * phrases.length);
+            } while (randomIndex === currentIndex);
+            
+            showPhrase(randomIndex);
+        }
 
+        // Клик по пузырю - просто следующая
+        bubble.addEventListener('click', () => showPhrase(currentIndex + 1));
+        
+        // Кнопки навигации
+        nextBtn.addEventListener('click', () => showPhrase(currentIndex + 1));
+        prevBtn.addEventListener('click', () => showPhrase(currentIndex - 1));
+        
+        // Кнопка-кубик - случайная
+        randomBtn.addEventListener('click', showRandomPhrase);
+
+        // Клавиатура
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') showPhrase(currentIndex + 1);
             if (e.key === 'ArrowLeft') showPhrase(currentIndex - 1);
+            if (e.key === ' ') showRandomPhrase(); // Пробел для рандома
         });
 
         loadPhrases();
