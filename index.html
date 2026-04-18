@@ -3,89 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Фраз с Изюминкой</title>
+    <title>Генератор Фраз</title>
     
     <link rel="manifest" href="manifest.json">
     
     <style>
+        /* 1. Внешний фон сайта и приложения - глубокий черный */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: #000000; 
             
-            /* Яркий, веселый градиент на фоне */
-            background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            background-size: cover;
-            background-attachment: fixed;
-            
-            /* Основной цвет текста - белый */
-            color: #ffffff; 
-            
-            /* Шрифт. Выбираем жирный serif (с засечками) для стиля демотиваторов */
+            /* Шрифт классический для демотиваторов */
             font-family: Georgia, 'Times New Roman', Times, serif;
             font-weight: bold;
-            
+            color: #ffffff; /* Основной цвет текста - белый */
             text-align: center;
-            padding: 20px;
+            padding: 10px;
+            box-sizing: border-box;
             overflow: hidden;
         }
-        
+
+        /* 2. Контейнер самого демотиватора */
+        #demotivator-container {
+            display: flex;
+            flex-direction: column; 
+            justify-content: space-between; 
+            width: 90%;
+            height: 85%; 
+            max-width: 600px; 
+        }
+
+        /* 3. ВЕРХНИЙ ТЕКСТ (Заголовок) */
+        .demo-text-top {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px; 
+            
+            /* Черная обводка */
+            text-shadow: 
+                1px 1px 0 #000, -1px -1px 0 #000, 
+                1px -1px 0 #000, -1px 1px 0 #000;
+        }
+
+        /* 4. ВНУТРЕННЯЯ ОБЛАСТЬ С РАМКОЙ */
+        #inner-frame {
+            flex-grow: 1; 
+            border: 4px solid #ffffff; /* Белая рамка */
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            
+            /* ЦВЕТНОЙ ФОН ВНУТРИ РАМКИ */
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background-size: 200% 200%;
+            
+            /* Плавное изменение градиента */
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        /* 5. ЦЕНТРАЛЬНЫЙ ТЕКСТ (Сама фраза) */
         #phrase-container {
-            font-size: 3rem; /* Увеличили размер для солидности */
-            max-width: 90%;
+            font-size: 2.2rem;
+            max-width: 95%;
             line-height: 1.2;
-            
-            /* Текст всегда в верхнем регистре (капс), как на мемах */
-            text-transform: uppercase; 
-            
-            /* Немного увеличим межбуквенное расстояние */
+            text-transform: uppercase;
             letter-spacing: 1px;
 
-            /* МАГИЯ ЧЕРНОЙ РАМКИ (ОБВОДКИ) */
-            /* Мы делаем 8 черных теней, сдвинутых во все стороны на 2px */
+            /* Мощная черная обводка для центрального текста */
             text-shadow: 
-                2px 2px 0 #000, 
-               -2px -2px 0 #000, 
-                2px -2px 0 #000, 
-               -2px 2px 0 #000,
-                0px 2px 0 #000,
-                0px -2px 0 #000,
-                2px 0px 0 #000,
-                -2px 0px 0 #000,
-                3px 3px 5px rgba(0,0,0,0.7); /* Дополнительная мягкая тень для объема */
+                2px 2px 0 #000, -2px -2px 0 #000, 
+                2px -2px 0 #000, -2px 2px 0 #000,
+                0px 2px 0 #000, 0px -2px 0 #000,
+                2px 0px 0 #000, -2px 0px 0 #000,
+                3px 3px 5px rgba(0,0,0,0.7);
 
             opacity: 0;
             transition: opacity 1s ease-in-out;
         }
 
+        /* 6. НИЖНИЙ ТЕКСТ (Пояснение) */
+        .demo-text-bottom {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px; 
+            color: #cccccc; 
+            
+            text-shadow: 
+                1px 1px 0 #000, -1px -1px 0 #000, 
+                1px -1px 0 #000, -1px 1px 0 #000;
+        }
+
+        /* Анимация переливания градиента */
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* Адаптация для мобильных экранов */
         @media (max-width: 768px) {
-            #phrase-container {
-                font-size: 2.2rem; /* На телефоне чуть компактнее */
-                max-width: 98%;
+            #demotivator-container {
+                width: 95%;
+                height: 90%;
             }
+            .demo-text-top { font-size: 1.2rem; }
+            #phrase-container { font-size: 1.8rem; }
+            .demo-text-bottom { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="phrase-container">ЗАГРУЗКА...</div>
+    <div id="demotivator-container">
+        
+        <div class="demo-text-top">ФРАЗА ДНЯ</div>
+        
+        <div id="inner-frame">
+            <div id="phrase-container">ЗАГРУЗКА...</div>
+        </div>
+        
+        <div class="demo-text-bottom">СЛЕДУЮЩАЯ ЧЕРЕЗ ПАРУ СЕКУНД</div>
+        
+    </div>
 
     <script>
         const container = document.getElementById('phrase-container');
         let phrases = [];
-        let lastIndex = -1; // Переменная для запоминания прошлой фразы
+        let lastIndex = -1;
 
-        // Функция для загрузки фраз из JSON-файла
         async function loadPhrases() {
             try {
-                // Добавляем ?t=... чтобы сбросить кэш браузера и всегда получать свежий файл
+                // Запрос с ?t= для сброса кэша
                 const response = await fetch('phrases.json?t=' + new Date().getTime());
                 phrases = await response.json();
                 
-                // Как только фразы загрузились, запускаем показ
                 if (phrases.length > 0) {
                     setTimeout(changePhrase, 500);
                 } else {
@@ -100,33 +159,30 @@
         function changePhrase() {
             let randomIndex = Math.floor(Math.random() * phrases.length);
             
-            // Проверяем, чтобы новая фраза не совпадала с предыдущей
+            // Защита от повторов
             while (randomIndex === lastIndex && phrases.length > 1) {
                 randomIndex = Math.floor(Math.random() * phrases.length);
             }
             
-            // Запоминаем текущий индекс
             lastIndex = randomIndex;
             const text = phrases[randomIndex];
             
-            // Прячем текущий текст
+            // Анимация затухания
             container.style.opacity = 0;
             
-            // Ждем завершения анимации затухания (1 секунда)
             setTimeout(() => {
-                container.innerText = text; // Меняем текст
-                container.style.opacity = 1;  // Показываем новый текст
+                container.innerText = text;
+                container.style.opacity = 1;
                 
-                // Считаем время показа: 4 секунды базы + 500 мс на каждое слово
+                // Таймер: 4 секунды базы + 500 мс на слово
                 const wordsCount = text.split(' ').length;
                 const displayTime = 4000 + (wordsCount * 500);
                 
-                // Запускаем следующий цикл после того, как время вышло
                 setTimeout(changePhrase, displayTime);
             }, 1000); 
         }
 
-        // Запускаем процесс загрузки
+        // Старт
         loadPhrases();
     </script>
 
