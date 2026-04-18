@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор фраз</title>
+    
     <link rel="manifest" href="manifest.json">
-
+    
     <style>
         body {
             margin: 0;
@@ -44,22 +45,39 @@
     <div id="phrase-container">Загрузка...</div>
 
     <script>
-        // Стартовый массив фраз (потом можно будет вынести в отдельный файл phrases.json)
-        const phrases = [
-            "У меня такой склад ума, что требуется охранник.",
-            "Ёжка моя, я твой ёжик.",
-            "Сделал три дела одновременно: ничего, совсем ничего и вообще ничего.",
-            "Умные мысли преследуют меня, но я быстрее.",
-            "Я не ленивый, я экономлю энергию для глобального потепления.",
-            "Интуиция — это способность головы чуять пятой точкой."
-            // Сюда мы потом закинем все 200 фраз
-        ];
-
         const container = document.getElementById('phrase-container');
-        
+        let phrases = [];
+        let lastIndex = -1; // Переменная для запоминания прошлой фразы
+
+        // Функция для загрузки фраз из JSON-файла
+        async function loadPhrases() {
+            try {
+                // Добавляем ?t=... чтобы сбросить кэш браузера и всегда получать свежий файл
+                const response = await fetch('phrases.json?t=' + new Date().getTime());
+                phrases = await response.json();
+                
+                // Как только фразы загрузились, запускаем показ
+                if (phrases.length > 0) {
+                    setTimeout(changePhrase, 500);
+                } else {
+                    container.innerText = "Файлик с фразами пуст :(";
+                }
+            } catch (error) {
+                console.error("Ошибка загрузки фраз:", error);
+                container.innerText = "Не удалось загрузить фразы. Проверь GitHub!";
+            }
+        }
+
         function changePhrase() {
-            // Выбираем случайную фразу
-            const randomIndex = Math.floor(Math.random() * phrases.length);
+            let randomIndex = Math.floor(Math.random() * phrases.length);
+            
+            // Проверяем, чтобы новая фраза не совпадала с предыдущей
+            while (randomIndex === lastIndex && phrases.length > 1) {
+                randomIndex = Math.floor(Math.random() * phrases.length);
+            }
+            
+            // Запоминаем текущий индекс
+            lastIndex = randomIndex;
             const text = phrases[randomIndex];
             
             // Прячем текущий текст
@@ -70,17 +88,17 @@
                 container.innerText = text; // Меняем текст
                 container.style.opacity = 1;  // Показываем новый текст
                 
-                // Умный таймер: 2 секунды базы + 300 мс на каждое слово
+                // Считаем время показа: 4 секунды базы + 500 мс на каждое слово
                 const wordsCount = text.split(' ').length;
-                const displayTime = 2000 + (wordsCount * 300);
+                const displayTime = 4000 + (wordsCount * 500);
                 
-                // Запускаем следующий цикл после того, как человек всё прочитал
+                // Запускаем следующий цикл после того, как время вышло
                 setTimeout(changePhrase, displayTime);
             }, 1000); 
         }
 
-        // Запускаем первую фразу через полсекунды после загрузки
-        setTimeout(changePhrase, 500);
+        // Запускаем процесс загрузки
+        loadPhrases();
     </script>
 
 </body>
