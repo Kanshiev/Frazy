@@ -13,9 +13,15 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            background-size: 200% 200%;
-            animation: funBg 10s ease infinite;
+            
+            /* ЗАСТАВКА (БЛЕДНАЯ КАРТИНКА) */
+            /* Мы кладем бледную, бледную картинку */
+            background-color: #e6f9ff; /* Светло-бирюзовый фоновый цвет */
+            background-image: url('kids_bg.png'); /* Картинка со зверятами */
+            background-size: repeat; /* Repeating pattern */
+            background-position: center;
+            background-attachment: fixed; /* Keep it behind everything */
+            
             font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
             color: #333333;
             text-align: center;
@@ -23,22 +29,32 @@
             box-sizing: border-box;
             overflow: hidden;
             user-select: none; /* Чтобы текст не выделялся при тапах */
+            position: relative; /* Для наложения элементов */
         }
 
         /* Счетчик сверху */
         #counter {
             position: fixed;
             top: 20px;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.7); /* Более прозрачный, чтобы было видно фон */
             padding: 5px 15px;
             border-radius: 20px;
             font-weight: bold;
             color: #6a11cb;
+            z-index: 10;
         }
 
         /* Основной пузырь */
         #bubble {
-            background-color: rgba(255, 255, 255, 0.95);
+            /* БИРЮЗОВЫЙ -> ЗЕЛЕНЫЙ -> СИНИЙ ГРАДИЕНТ */
+            /* Мы задаем градиент и делаем его переливающимся */
+            background: linear-gradient(135deg, 
+                #00e6e6, #33ff33, #33ccff, #00e6e6);
+            background-size: 800% 800%; /* Растягиваем, чтобы цвета плавно сменяли друг друга */
+            
+            /* Плавное изменение градиента (анимация) */
+            animation: textBgAnimation 30s linear infinite;
+
             border-radius: 40px;
             padding: 40px 30px;
             width: 100%;
@@ -47,11 +63,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            border: 6px solid #ff9a9e;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); /* Мягкая тень, чтобы не перегружать */
+            border: 6px solid #ffffff; /* Белая рамка, чтобы отделить от фона */
             cursor: pointer;
             position: relative;
             transition: transform 0.1s;
+            z-index: 5;
         }
 
         #bubble:active {
@@ -63,6 +80,8 @@
             line-height: 1.3;
             font-weight: bold;
             word-wrap: break-word;
+            /* Текст будет черным на этом ярком фоне */
+            color: #333333; 
         }
 
         /* Кнопки навигации */
@@ -70,7 +89,7 @@
             position: fixed;
             bottom: 30px;
             background: #ffffff;
-            border: 4px solid #ff6a88;
+            border: 4px solid #ffffff; /* Белые рамки для кнопок */
             border-radius: 50%;
             width: 70px;
             height: 70px;
@@ -78,7 +97,7 @@
             justify-content: center;
             align-items: center;
             font-size: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             cursor: pointer;
             z-index: 100;
             -webkit-tap-highlight-color: transparent;
@@ -97,10 +116,12 @@
             padding: 10px;
             border-radius: 50%;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 100;
         }
 
-        @keyframes funBg {
+        /* Анимация плавного изменения градиента */
+        @keyframes textBgAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
