@@ -3,74 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Веселые шутки!</title>
+    <title>Шутки для Антона</title>
     
     <style>
         body {
             margin: 0;
             min-height: 100dvh; 
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            
-            /* Яркий детский фон */
             background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
             background-size: 200% 200%;
             animation: funBg 10s ease infinite;
-            
-            /* Мультяшный шрифт */
             font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
             color: #333333;
             text-align: center;
             padding: 20px; 
             box-sizing: border-box;
             overflow: hidden;
+            user-select: none; /* Чтобы текст не выделялся при тапах */
         }
 
-        /* Белый пузырь для текста */
+        /* Счетчик сверху */
+        #counter {
+            position: fixed;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #6a11cb;
+        }
+
+        /* Основной пузырь */
         #bubble {
             background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
+            border-radius: 40px;
             padding: 40px 30px;
-            width: 90%;
+            width: 100%;
             max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 5px solid #ff9a9e;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 6px solid #ff9a9e;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s;
         }
 
-        .title {
-            font-size: 1.5rem;
-            color: #ff6a88;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
+        #bubble:active {
+            transform: scale(0.98);
         }
 
         #phrase-container {
-            font-size: 2rem;
-            line-height: 1.4;
+            font-size: 2.2rem;
+            line-height: 1.3;
             font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            word-wrap: break-word;
         }
 
-        /* КНОПКА ВОЗВРАТА */
-        #back-btn {
+        /* Кнопки навигации */
+        .nav-btn {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-size: 2.5rem;
-            text-decoration: none;
-            transition: transform 0.2s;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+            bottom: 30px;
+            background: #ffffff;
+            border: 4px solid #ff6a88;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
             z-index: 100;
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        #back-btn:active {
-            transform: scale(0.85);
+        #prev-btn { left: 20px; }
+        #next-btn { right: 20px; }
+        
+        /* Кнопка Домой */
+        #home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @keyframes funBg {
@@ -80,66 +107,76 @@
         }
 
         @media (max-width: 768px) {
-            #bubble { padding: 30px 20px; border-width: 4px; }
-            #phrase-container { font-size: 1.6rem; }
-            #back-btn { font-size: 2.2rem; bottom: 15px; left: 15px; }
+            #phrase-container { font-size: 1.8rem; }
+            .nav-btn { width: 60px; height: 60px; bottom: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <a href="index.html" id="home-btn">🏠</a>
+    <div id="counter">Загрузка...</div>
+
     <div id="bubble">
-        <div class="title">✨ Шутка-Минутка ✨</div>
-        <div id="phrase-container">ЗАГРУЗКА...</div>
+        <div id="phrase-container">Нажми, чтобы начать!</div>
     </div>
 
-    <a href="index.html" id="back-btn" title="Вернуться">🔙</a>
+    <div id="prev-btn" class="nav-btn">⬅️</div>
+    <div id="next-btn" class="nav-btn">➡️</div>
 
     <script>
         const container = document.getElementById('phrase-container');
+        const counter = document.getElementById('counter');
+        const bubble = document.getElementById('bubble');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+
         let phrases = [];
-        let lastIndex = -1;
+        let currentIndex = 0;
 
         async function loadPhrases() {
             try {
-                // Обращаемся к новому детскому файлу JSON!
                 const response = await fetch('anton_phrases.json?t=' + new Date().getTime());
-                if (!response.ok) throw new Error("HTTP error " + response.status);
                 phrases = await response.json();
                 
                 if (phrases.length > 0) {
-                    setTimeout(changePhrase, 500);
-                } else {
-                    container.innerText = "Файлик пуст! :(";
-                    container.style.opacity = 1; 
+                    showPhrase(0);
                 }
             } catch (error) {
-                console.error("Ошибка:", error);
-                container.innerText = "Упс! Ошибка загрузки.";
-                container.style.opacity = 1; 
+                container.innerText = "Ошибка загрузки 😢";
             }
         }
 
-        function changePhrase() {
-            let randomIndex = Math.floor(Math.random() * phrases.length);
-            while (randomIndex === lastIndex && phrases.length > 1) {
-                randomIndex = Math.floor(Math.random() * phrases.length);
-            }
-            lastIndex = randomIndex;
-            const text = phrases[randomIndex];
+        function showPhrase(index) {
+            if (index < 0) index = phrases.length - 1;
+            if (index >= phrases.length) index = 0;
             
+            currentIndex = index;
+            
+            // Анимация быстрой смены
             container.style.opacity = 0;
-            
             setTimeout(() => {
-                container.innerText = text;
+                container.innerText = phrases[currentIndex];
                 container.style.opacity = 1;
-                
-                const wordsCount = text.split(' ').length;
-                const displayTime = 4000 + (wordsCount * 500);
-                
-                setTimeout(changePhrase, displayTime);
-            }, 800); 
+                counter.innerText = `Шутка ${currentIndex + 1} из ${phrases.length}`;
+            }, 100);
         }
+
+        // Клик по пузырю или правой кнопке - вперед
+        bubble.addEventListener('click', () => showPhrase(currentIndex + 1));
+        nextBtn.addEventListener('click', () => showPhrase(currentIndex + 1));
+        
+        // Клик по левой кнопке - назад
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Чтобы не срабатывал клик по родителю, если кнопки наложатся
+            showPhrase(currentIndex - 1);
+        });
+
+        // Поддержка клавиатуры (стрелочки)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') showPhrase(currentIndex + 1);
+            if (e.key === 'ArrowLeft') showPhrase(currentIndex - 1);
+        });
 
         loadPhrases();
     </script>
