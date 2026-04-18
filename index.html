@@ -21,7 +21,8 @@
             color: #ffffff;
             text-align: center;
             
-            padding: 40px 20px; 
+            /* Отступы по бокам стали больше */
+            padding: 40px 25px; 
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -30,7 +31,8 @@
             display: flex;
             flex-direction: column; 
             justify-content: space-between; 
-            width: 100%;
+            /* Контейнер теперь не занимает 100% ширины на мобилках */
+            width: 92%; 
             max-width: 600px; 
             height: auto;
             min-height: 80vh; 
@@ -50,7 +52,7 @@
         #inner-frame {
             flex-grow: 1; 
             border: 4px solid #ffffff; 
-            padding: 30px 20px; 
+            padding: 30px 25px; /* Больше воздуха внутри рамки */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -62,7 +64,6 @@
                 #0000ff, #4b0082, #9400d3, #ff0000
             );
             background-size: 800% 800%;
-            
             animation: rainbowAnimation 90s linear infinite;
             
             min-height: 250px; 
@@ -103,7 +104,7 @@
             100% { background-position: 100% 50%; }
         }
 
-        /* КНОПКА ДЕТСКОГО РЕЖИМА */
+        /* Кнопка детского режима */
         #kids-mode-btn {
             position: fixed;
             bottom: 20px;
@@ -122,9 +123,9 @@
         }
 
         @media (max-width: 768px) {
-            #demotivator-container { min-height: 75vh; }
+            #demotivator-container { width: 90%; min-height: 75vh; }
             .demo-text-top { font-size: 1.2rem; margin-bottom: 20px; }
-            #inner-frame { padding: 25px 15px; }
+            #inner-frame { padding: 25px 20px; }
             #phrase-container { font-size: 1.8rem; }
             .demo-text-bottom { font-size: 1rem; margin-top: 20px; }
             #kids-mode-btn { font-size: 2.2rem; bottom: 15px; right: 15px; }
