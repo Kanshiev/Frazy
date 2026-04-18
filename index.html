@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор фраз</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1e1e2e; /* Приятный тёмный фон */
+            color: #cdd6f4; /* Мягкий светлый текст */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        #phrase-container {
+            font-size: 2.5rem;
+            max-width: 80%;
+            line-height: 1.4;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Адаптация для мобильных экранов */
+        @media (max-width: 768px) {
+            #phrase-container {
+                font-size: 1.8rem;
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="phrase-container">Загрузка...</div>
+
+    <script>
+        // Стартовый массив фраз (потом можно будет вынести в отдельный файл phrases.json)
+        const phrases = [
+            "У меня такой склад ума, что требуется охранник.",
+            "Ёжка моя, я твой ёжик.",
+            "Сделал три дела одновременно: ничего, совсем ничего и вообще ничего.",
+            "Умные мысли преследуют меня, но я быстрее.",
+            "Я не ленивый, я экономлю энергию для глобального потепления.",
+            "Интуиция — это способность головы чуять пятой точкой."
+            // Сюда мы потом закинем все 200 фраз
+        ];
+
+        const container = document.getElementById('phrase-container');
+        
+        function changePhrase() {
+            // Выбираем случайную фразу
+            const randomIndex = Math.floor(Math.random() * phrases.length);
+            const text = phrases[randomIndex];
+            
+            // Прячем текущий текст
+            container.style.opacity = 0;
+            
+            // Ждем завершения анимации затухания (1 секунда)
+            setTimeout(() => {
+                container.innerText = text; // Меняем текст
+                container.style.opacity = 1;  // Показываем новый текст
+                
+                // Умный таймер: 2 секунды базы + 300 мс на каждое слово
+                const wordsCount = text.split(' ').length;
+                const displayTime = 2000 + (wordsCount * 300);
+                
+                // Запускаем следующий цикл после того, как человек всё прочитал
+                setTimeout(changePhrase, displayTime);
+            }, 1000); 
+        }
+
+        // Запускаем первую фразу через полсекунды после загрузки
+        setTimeout(changePhrase, 500);
+    </script>
+
+</body>
+</html>
